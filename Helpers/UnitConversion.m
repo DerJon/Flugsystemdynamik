@@ -1,6 +1,6 @@
 classdef UnitConversion
     methods(Static)
-        %Speed
+        %Geschwindigkeit
         function [v_ms] = kts2ms(v_kts)
             v_ms=(1852/3600)*v_kts; 
         end
@@ -8,7 +8,7 @@ classdef UnitConversion
             v_kts = (3600/1852) * v_ms;
         end
         
-        %Distance
+        %Entfernung
         function [m] = ft2m(ft)
             m = ft * 0.30479;
         end
