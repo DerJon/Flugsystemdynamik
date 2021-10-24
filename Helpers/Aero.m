@@ -61,8 +61,66 @@ classdef Aero
 
         function [delta_ref] = delta_ref(AC,BFZ)
             %Berechnung Bezugs-Schubdrosselstellung
-                delta_ref = (BFZ.F/AC.F_TBPmax)/((BFZ.rho/AC.rho_TBP)^(-AC.n_rho));
+                delta_ref = (BFZ.F/AC.F_TBPmax)*((BFZ.rho/AC.rho_TBP)^(-AC.n_rho));
         end
+        
+        %Ersatzgrößen der Widerstandsgleichung
+        function [X_V] = X_V(AC,BFZ)
+            X_V = -((BFZ.q_quer*AC.S)/(AC.m*BFZ.V))*(2-AC.n_v)*BFZ.C_W;
+        end
+
+        function [X_alpha] = X_alpha(AC,BFZ)
+            AC.C_W_alpha = 2*AC.k*BFZ.C_A*AC.C_A_Alpha;
+            X_alpha = -((BFZ.q_quer*AC.S)/AC.m)*AC.C_W_alpha;
+        end
+
+        function [X_eta] = X_eta(AC,BFZ)
+            AC.C_W_Eta = 2*AC.k*BFZ.C_A*AC.C_A_Eta;
+            X_eta = -((BFZ.q_quer*AC.S)/AC.m)*AC.C_W_Eta;
+        end
+
+        function [X_delta] = X_delta(AC,BFZ)
+            X_delta = ((BFZ.q_quer*AC.S)/AC.m)*(BFZ.C_W/BFZ.delta);
+        end
+
+        %Ersatzgrößen der Auftriebsgleichung
+        function [Z_V] = Z_V(AC,BFZ)
+             Z_V = -2*((BFZ.q_quer*AC.S)/(AC.m*BFZ.V))*(BFZ.C_A/BFZ.V);
+        end
+
+        function [Z_alpha] = Z_alpha(AC,BFZ)
+            Z_alpha =  -((BFZ.q_quer*AC.S)/(AC.m*BFZ.V))*AC.C_A_Alpha;
+        end
+
+        function [Z_eta] = Z_eta(AC,BFZ)
+             Z_eta = -((BFZ.q_quer*AC.S)/(AC.m*BFZ.V))*AC.C_A_Eta;
+        end
+
+        function [Z_delta] = Z_delta(BFZ)
+            Z_delta = -BFZ.X_delta*(tan(BFZ.alpha)/BFZ.V);
+        end
+
+        %Ersatzgrößen der Momentengleichung
+        function [M_V] = M_V(AC,BFZ)
+            M_V = BFZ.Z_V*((BFZ.q_quer*AC.S*AC.l_my)/AC.I_y)*(AC.l_my/BFZ.V)*AC.C_m_alphaPunkt;
+        end
+
+        function [M_q] = M_q(AC,BFZ)
+            M_q = ((BFZ.q_quer*AC.S*AC.l_my)/AC.I_y)*(AC.l_my/BFZ.V)*(AC.C_m_q+AC.C_m_alphaPunkt);
+        end
+
+        function [M_alpha] = M_alpha(AC,BFZ)
+            M_alpha = ((BFZ.q_quer*AC.S*AC.l_my)/AC.I_y)*(AC.C_m_Alpha+BFZ.Z_alpha*(AC.l_my/BFZ.V)*AC.C_m_alphaPunkt);
+        end
+
+        function [M_eta] = M_eta(AC,BFZ)
+            M_eta =  ((BFZ.q_quer*AC.S*AC.l_my)/AC.I_y)*(AC.C_m_Eta+BFZ.Z_eta*(AC.l_my/BFZ.V)*AC.C_m_alphaPunkt);
+        end
+
+        function [M_delta] = M_delta(AC,BFZ)
+            M_delta = BFZ.Z_delta*((BFZ.q_quer*AC.S*AC.l_my)/AC.I_y)*(AC.l_my/BFZ.V)*AC.C_m_alphaPunkt;
+        end
+ 
     end
 end
 

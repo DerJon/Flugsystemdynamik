@@ -2,7 +2,7 @@
 %Struktur
 AC.m = 100000; %kg
 AC.S = 268; %m²
-AC.I_y = 6.78*(10)^6; %kgm²
+AC.I_y = 6.87e06; %kgm²
 AC.l_my = 6.39; %m
 %Antrieb
 AC.F_TBPmax = 320800; %N
