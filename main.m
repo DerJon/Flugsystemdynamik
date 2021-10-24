@@ -55,12 +55,25 @@ AS.B = [BFZ.M_eta BFZ.M_delta ; BFZ.Z_delta BFZ.Z_delta];
 AS.Sys = ss(AS.A,AS.B,eye(2,2),0,'StateName',{'Δq','Δα'},'InputName',{'Δη','Δδ'},'OutputName',{'Δq','Δα'});
 AS.Eig = eig(AS.A);
 AS.TF = tf(AS.Sys);
+
+AS.sigma = 0.5*(BFZ.M_q+BFZ.Z_alpha);
+AS.omega_0 = sqrt(BFZ.M_q*BFZ.Z_alpha-BFZ.M_alpha);
+AS.omega = ZRM.omega(AS.omega_0,AS.sigma);
+AS.D = ZRM.D(AS.sigma,AS.omega_0);
+AS.T = ZRM.omega2T(AS.omega);
+
 %Bahnschwingung
 BS.A = [BFZ.X_V -ENV.g ; -BFZ.Z_V 0];
 BS.B = [BFZ.X_eta BFZ.X_delta ; -BFZ.Z_delta -BFZ.Z_delta];
 BS.Sys = ss(BS.A,BS.B,eye(2,2),0,'StateName',{'ΔV','Δγ'},'InputName',{'Δη','Δδ'},'OutputName',{'ΔV','Δγ'});
 BS.Eig = eig(BS.A);
 BS.TF = tf(BS.Sys);
+
+BS.sigma = BFZ.X_V/2;
+BS.omega_0 = sqrt(-ENV.g*BFZ.Z_V);
+BS.omega = ZRM.omega(BS.omega_0,BS.sigma);
+BS.D = ZRM.D(BS.sigma,BS.omega_0);
+BS.T = ZRM.omega2T(BS.omega);
 
 %-- 4x4 Lösung / lineares Differntialgleichungssystem --
 DGS.A = [BFZ.X_V -ENV.g 0 BFZ.X_alpha 
