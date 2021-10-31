@@ -9,9 +9,8 @@ run("Structs/Environment.m");
 NickD.k_p = {'H [m]','v [kt]','k_p [#]'; 30000, 275, 0; 30000, 325, 0; 25000, 250, 0; 25000, 300, 0};
 
 for i = 2:5
+    %% --- Bezugsflugzustand ---
     %Laden der vorgegebenen Parameter aus NickD.k_p
-
-    %--- Bezugsflugzustand ---
     h = UnitConversion.ft2m(NickD.k_p{i,1}); % 30000ft
     v_kt = NickD.k_p{i,2}; % kt (IAS)
     v_ms = UnitConversion.kts2ms(v_kt); % m/s (IAS)
@@ -35,7 +34,7 @@ for i = 2:5
         BFZ.C_A= Aero.C_A_ref(AC,BFZ);
     end
     
-    %--- Berechnung der Ersatzgrößen ---
+    %% --- Berechnung der Ersatzgrößen ---
     BFZ.X_V = Aero.X_V(AC,BFZ);
     BFZ.X_alpha = Aero.X_alpha(AC,BFZ);
     BFZ.X_eta = Aero.X_eta(AC,BFZ);
@@ -53,7 +52,7 @@ for i = 2:5
     BFZ.M_V = Aero.M_V(AC,BFZ);
     
     
-    %--- Zustandsraumdarstellung ---
+    %% -- Zustandsraumdarstellung ---
     %-- 2x2 Näherung --
     %Anstellwinkelschwingung
     AS.A = [BFZ.M_q BFZ.M_alpha ; 1 BFZ.Z_alpha];
@@ -81,7 +80,7 @@ for i = 2:5
     BS.D = ZRM.D(BS.sigma,BS.omega_0);
     BS.T = ZRM.omega2T(BS.omega);
     
-    %-- 4x4 Lösung / lineares Differntialgleichungssystem --
+    %--- 4x4 Lösung / lineares Differntialgleichungssystem --
     DGS.A = [BFZ.X_V -ENV.g 0 BFZ.X_alpha 
             -BFZ.Z_V 0 0 -BFZ.Z_alpha
             BFZ.M_V 0 BFZ.M_q BFZ.M_alpha
@@ -103,11 +102,11 @@ for i = 2:5
     DGS.D_bs = ZRM.D(DGS.sigma_bs,DGS.omega_0_bs);
     DGS.T_bs = ZRM.omega2T(DGS.omega_bs);
     
-    %--- Proportionalrückführung ---
+    %% --- Proportionalrückführung ---
     [AS.TF_Z,AS.TF_N] = tfdata(AS.Sys);
     NickD.N = AS.TF_N(1,1);
     NickD.Z = AS.TF_Z(1,1);
-    syms k;
+    syms k s;
     
     NickD.sigma = -(1/2)*(NickD.N{1}(2)+k*NickD.Z{1}(2));
     NickD.omega_0 = sqrt(NickD.N{1}(3)+k*NickD.Z{1}(3));
