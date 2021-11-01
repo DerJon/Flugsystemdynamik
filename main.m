@@ -113,4 +113,29 @@ for i = 2:5
     NickD.D = -NickD.sigma/NickD.omega_0;
     
     NickD.k_p{i,3} = solve(NickD.D==1/sqrt(2),k);
+
+    %% --- Lag-Filter Rückführung ---
+    [NickD.NST,NickD.P,NickD.k0]=zpkdata(AS.TF(1,1),'v');
+    NickD.Lag.d = -1;
+
+    %Konstruieren von s_soll
+    NickD.Lag.D = 1/sqrt(2);
+    NickD.Lag.omega_0 = 3;
+    NickD.Lag.sigma=-NickD.Lag.D*NickD.Lag.omega_0;
+    NickD.Lag.omega=sqrt(NickD.Lag.omega_0^2 - NickD.Lag.sigma^2);
+    NickD.Lag.s_soll = complex(NickD.Lag.sigma,NickD.Lag.omega);
+    
+    %Anwendung Betrags- und Phasenbedingung
+    syms psi_c k;
+    NickD.Lag.psi_c = solve(pi+sum(angle(NickD.Lag.s_soll-NickD.NST))- ...
+        sum(angle(NickD.Lag.s_soll-NickD.P))+pi+psi_c- ...
+        angle(NickD.Lag.s_soll-NickD.Lag.d)== pi,psi_c);
+    NickD.Lag.c = real(NickD.Lag.s_soll) - imag(NickD.Lag.s_soll) / tan(NickD.Lag.psi_c);
+
+    NickD.Lag.k = solve(abs(NickD.k0)*prod(abs(NickD.Lag.s_soll-NickD.NST))/ ...
+        prod(abs(NickD.Lag.s_soll-NickD.P))*abs(k)* ...
+        abs(NickD.Lag.s_soll-NickD.Lag.c)/abs(NickD.Lag.s_soll-NickD.Lag.d)==1,k);
+    if(NickD.Lag.k > 0)
+        NickD.Lag.k=NickD.Lag.k*-1;
+    end
 end
