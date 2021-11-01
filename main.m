@@ -6,18 +6,18 @@ sympref('FloatingPointOutput',true);
 run("Structs/Aircraft.m");
 run("Structs/Environment.m");
 
-NickD.k_p = {'H [m]','v [kt]','k_p [#]'; 30000, 275, 0; 30000, 325, 0; 25000, 250, 0; 25000, 300, 0};
+input=[30000, 275; 30000, 325; 25000, 250; 25000, 300];
 
-for i = 2:5
+for i = 1:1%length(input)
     %% --- Bezugsflugzustand ---
-    %Laden der vorgegebenen Parameter aus NickD.k_p
-    h = UnitConversion.ft2m(NickD.k_p{i,1}); % 30000ft
-    v_kt = NickD.k_p{i,2}; % kt (IAS)
-    v_ms = UnitConversion.kts2ms(v_kt); % m/s (IAS)
+    %Laden der vorgegebenen Parameter aus VAR
+    BFZ.h = UnitConversion.ft2m(input(i,1)); % 30000ft
+    BFZ.v_kt =input(i,2); % kt (IAS)
+    BFZ.v_ms = UnitConversion.kts2ms(BFZ.v_kt); % m/s (IAS)
     
     % Berechnung True Airspeed (TAS)
-    BFZ.rho = Aero.rho(h,ENV);
-    BFZ.V = Aero.ias2tas(v_ms,BFZ.rho);
+    BFZ.rho = Aero.rho(BFZ.h,ENV);
+    BFZ.V = Aero.ias2tas(BFZ.v_ms,BFZ.rho);
     
     BFZ.C_A = Aero.C_A_ref_initial(AC,BFZ);
     BFZ.q_quer = Aero.q_quer(BFZ);
@@ -50,8 +50,7 @@ for i = 2:5
     BFZ.M_delta = Aero.M_delta(AC,BFZ);
     BFZ.M_q = Aero.M_q(AC,BFZ);
     BFZ.M_V = Aero.M_V(AC,BFZ);
-    
-    
+
     %% -- Zustandsraumdarstellung ---
     %-- 2x2 Näherung --
     %Anstellwinkelschwingung
@@ -112,7 +111,7 @@ for i = 2:5
     NickD.omega_0 = sqrt(NickD.N{1}(3)+k*NickD.Z{1}(3));
     NickD.D = -NickD.sigma/NickD.omega_0;
     
-    NickD.k_p{i,3} = solve(NickD.D==1/sqrt(2),k);
+    NickD.k_p = solve(NickD.D==1/sqrt(2),k);
 
     %% --- Lag-Filter Rückführung ---
     [NickD.NST,NickD.P,NickD.k0]=zpkdata(AS.TF(1,1),'v');
