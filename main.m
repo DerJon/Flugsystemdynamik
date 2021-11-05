@@ -1,10 +1,10 @@
-addpath("Helpers/")
-addpath("Structs/")
+addpath("Helpers\")
+addpath("Structs\")
 format long
 sympref('FloatingPointOutput',true);
 
-run("Structs/Aircraft.m");
-run("Structs/Environment.m");
+run("Structs\Aircraft.m");
+run("Structs\Environment.m");
 
 %Preallocation of Structs
 BFZ(1:4) = struct();
