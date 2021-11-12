@@ -3,6 +3,8 @@ addpath("Structs\")
 format long
 sympref('FloatingPointOutput',true);
 
+clear;
+
 run("Structs\Aircraft.m");
 run("Structs\Environment.m");
 
