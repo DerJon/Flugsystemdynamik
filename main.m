@@ -121,6 +121,10 @@ for i = 1:length(input)
     NickD(i).D = -NickD(i).sigma/NickD(i).omega_0;
     
     NickD(i).k_p = solve(NickD(i).D==1/sqrt(2),k);
+    
+    disp(BFZ(i).h);
+    disp(BFZ(i).v_ms);
+    disp(NickD(i).k_p);
 
     %% --- Lag-Filter Rückführung ---
     [NickD(i).NST,NickD(i).P,NickD(i).k0]=zpkdata(AS(i).TF(1,1),'v');
