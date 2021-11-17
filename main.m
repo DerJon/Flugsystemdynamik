@@ -15,7 +15,7 @@ BS(1:4) = struct();
 DGS(1:4) = struct();
 NickD(1:4) = struct();
 
-input=[30000, 275; 30000, 325; 25000, 250; 25000, 300];
+input=[30000, 350; 30000, 250; 25000, 250; 25000, 350];
 
 for i = 1:length(input)
     %% --- Bezugsflugzustand ---
