@@ -15,7 +15,11 @@ BS(1:4) = struct();
 DGS(1:4) = struct();
 NickD(1:4) = struct();
 
-input=[30000, 350; 30000, 250; 25000, 250; 25000, 350];
+input=[ 30000, 250; 
+        30000, 275; 
+        30000, 300; 
+        30000, 325;
+        30000, 350];
 
 for i = 1:length(input)
     %% --- Bezugsflugzustand ---
@@ -121,10 +125,6 @@ for i = 1:length(input)
     NickD(i).D = -NickD(i).sigma/NickD(i).omega_0;
     
     NickD(i).k_p = solve(NickD(i).D==1/sqrt(2),k);
-    
-    disp(BFZ(i).h);
-    disp(BFZ(i).v_ms);
-    disp(NickD(i).k_p);
 
     %% --- Lag-Filter Rückführung ---
     [NickD(i).NST,NickD(i).P,NickD(i).k0]=zpkdata(AS(i).TF(1,1),'v');
@@ -137,7 +137,7 @@ for i = 1:length(input)
     NickD(i).Lag.omega=sqrt(NickD(i).Lag.omega_0^2 - NickD(i).Lag.sigma^2);
     NickD(i).Lag.s_soll = complex(NickD(i).Lag.sigma,NickD(i).Lag.omega);
     
-    %Anwendung Betrags- und PhAS(i)enbedingung
+    %Anwendung Betrags- und Phasenbedingung
     syms psi_c k;
     NickD(i).Lag.psi_c = solve(pi+sum(angle(NickD(i).Lag.s_soll-NickD(i).NST))- ...
         sum(angle(NickD(i).Lag.s_soll-NickD(i).P))+pi+psi_c- ...
@@ -149,4 +149,9 @@ for i = 1:length(input)
     if(NickD(i).Lag.k > 0)
         NickD(i).Lag.k=NickD(i).Lag.k*-1;
     end
+
+    disp(BFZ(i).h);
+    disp(BFZ(i).v_ms);
+    disp(NickD(i).k_p)
+    disp(NickD(i).Lag.c);
 end
