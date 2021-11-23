@@ -170,5 +170,5 @@ for m = 1:length(input_height)
         c(i) = NickD(i).Lag.c;
     end
 end
-T = table(H_ft,H_m,v_kt,v_rueck,v_TAS,k_p,k_lag,c);
+T = table(H_ft,H_m,v_kt,v_TAS,k_p,k_lag,c);
 H_m_LUT = unique(H_m);
