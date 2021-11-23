@@ -8,10 +8,13 @@ clear;
 run("Structs/Aircraft.m");
 run("Structs/Environment.m");
 
-input_height = [20000,25000,30000,35000];
-input_speed = [200,250,275,300,325,350];
+%input_height = [20000,25000,30000,35000];
+%input_speed = [200,250,275,300,325,350];
 
-input_quantity = length(input_height)+length(input_speed);
+input_height = [5000:5000:50000];
+input_speed = [50:50:500];
+
+input_quantity = length(input_height)*length(input_speed);
 H_ft = zeros(input_quantity,1);
 H_m = zeros(input_quantity,1);
 v_kt = zeros(input_quantity,1);
@@ -33,7 +36,8 @@ for m = 1:length(input_height)
         i = i+1;
         %% --- Bezugsflugzustand ---
         %Laden der vorgegebenen Parameter aus VAR
-        BFZ(i).h = UnitConversion.ft2m(input_height(m)); % m
+        BFZ(i).h_ft = input_height(m);
+        BFZ(i).h = UnitConversion.ft2m(BFZ(i).h_ft); % 
         BFZ(i).v_kt =input_speed(n); % kt (IAS(i))
         BFZ(i).v_ms = UnitConversion.kts2ms(BFZ(i).v_kt); % m/s (IAS(i))
         
