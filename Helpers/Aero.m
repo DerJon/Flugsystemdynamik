@@ -15,6 +15,12 @@ classdef Aero
             %(TAS)
             tas = sqrt(1.225/rho) * ias;
         end
+
+        function [ias] = tas2ias(tas, rho)
+            %Umrechnung der true Airspeed (TAS) in die indicated Airspeed
+            %(IAS)
+            ias = tas / sqrt(1.225/rho);
+        end
         
         function [C_A_ref] = C_A_ref_initial(AC,BFZ)
             %Berechnung von C_Aref aus dem vertikalen Gleichgewicht
