@@ -8,11 +8,8 @@ clear;
 run("Structs/Aircraft.m");
 run("Structs/Environment.m");
 
-%input_height = [20000,25000,30000,35000];
-%input_speed = [200,250,275,300,325,350];
-
-input_height = [5000:5000:50000];
-input_speed = [50:50:500];
+input_height = [25000,30000];
+input_speed = [250,275,300,325];
 
 input_quantity = length(input_height)*length(input_speed);
 H_ft = zeros(input_quantity,1);
